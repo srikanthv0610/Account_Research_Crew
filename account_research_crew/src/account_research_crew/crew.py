@@ -4,14 +4,17 @@ from crewai import Agent, Crew, Process, Task, LLM
 from crewai.project import CrewBase, agent, crew, task
 from crewai_tools import SerperDevTool
 
+# Load environment variables from .env file, including API keys for LLM and search tool.
 load_dotenv()
 
-# ── LLM pointed at your APIM endpoint ───────────────────────────────────────
+# ── LLM configuration ──────────────────────────────────────────────────────
+# Build the language model client used by all agents in this crew.
 
 def build_llm() -> LLM:
     azure_apim_key = os.getenv("AZURE_APIM_SUBSCRIPTION_KEY")
     openai_key = os.getenv("OPENAI_API_KEY")
 
+    # Azure APIM when configured, otherwise fallback to OpenAI key.
     if azure_apim_key:
         return LLM(
             model="openai/gpt-4o",
@@ -32,37 +35,47 @@ def build_llm() -> LLM:
             temperature=0.5,
         )
 
+    # If no credentials are available, fail fast with a clear message.
     raise ValueError(
         "No LLM credentials found. Set either AZURE_APIM_SUBSCRIPTION_KEY or OPENAI_API_KEY in .env"
     )
 
 llm = build_llm()
 
-
+# Search tool instance used by the research agent.
+search_tool = SerperDevTool()
 
 @CrewBase
 class ResearchCrew:
     """
-    Research Crew — prepares a pre-meeting briefing for an account executive.
+    ResearchCrew - defines the high-level agent/task pipeline for account research and prepares 
+    a pre-meeting briefing for an account executive.
+
+    This crew is responsible for creating a pre-meeting briefing by gathering
+    company intelligence, analyzing it, and delivering informative summaries.
+
     Workflow (sequential):
         1. Company Research Agent  → gathers raw company intelligence using web search.
     """
 
+    # YAML configuration files that define the agent and task behavior.
     agents_config = "config/agents.yaml"
-    tasks_config  = "config/tasks.yaml"
+    tasks_config = "config/tasks.yaml"
 
     # ── Agents ────────────────────────────────────────────────────────────────
 
     @agent
     def company_research_agent(self) -> Agent:
         """
-        Searches the web and compiles raw information about the target company.
-        Given access to SerperDevTool for live web search.
+        Create and configure the company research agent.
+
+        This agent performs web search using SerperDevTool and returns raw
+        company intelligence for later task processing.
         """
         return Agent(
             config=self.agents_config["company_research_agent"],
             llm=llm,
-            #tools=[search_tool],
+            tools=[search_tool],
             verbose=True,
         )
 
@@ -71,8 +84,10 @@ class ResearchCrew:
     @task
     def company_research_task(self) -> Task:
         """
-        Task 1: Research the target company using web search.
-        Output feeds directly into the analysis task.
+        Define the company research task that the crew will execute.
+
+        The task binds the research agent to the task config and declares the
+        work that must be completed before subsequent steps can run.
         """
         return Task(
             config=self.tasks_config["company_research_task"],
@@ -87,8 +102,8 @@ class ResearchCrew:
         Assembles the crew with sequential processing:
         ResearchAgent → AnalystAgent → SummaryAgent
 
-        Process.sequential ensures each agent waits for the previous
-        agent's output before starting — critical for context passing.
+        This method declares the ordering of agents and tasks, using a
+        sequential process to enforce step-by-step execution.
         """
         return Crew(
             agents=self.agents,
