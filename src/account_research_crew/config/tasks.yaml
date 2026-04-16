@@ -1,0 +1,36 @@
+company_research_task:
+  description: >
+    Research the company: {company}.
+    Gather the following:
+    - Company overview (industry, size, headquarters, founding year)
+    - Recent news (last 3-6 months)
+    - Key products and services
+    - Financial health and recent performance
+    - Key executives and decision makers
+    - Known challenges or strategic initiatives
+  expected_output: >
+    A structured research report with clearly labeled sections
+    covering all the above points for {company}.
+  agent: company_research_agent
+
+account_insight_task:
+  description: >
+    Review the research findings for {company} and transform them into business
+    insight for the upcoming meeting.
+
+    Do not just repeat the research. Instead, interpret it and explain:
+    - Which developments matter most for the meeting
+    - What business priorities may be emerging
+    - What likely pain points, risks, or opportunities can be inferred
+    - Which findings are most relevant for the account executive
+    - What should be validated or explored during the conversation
+
+    Focus on business relevance, interpretation, and account planning value.
+  expected_output: >
+    A structured account insight memo for {company} with:
+    1. Key business themes
+    2. Meeting relevance
+    3. Likely priorities and pain points
+    4. Opportunity signals
+    5. Risks, gaps, or assumptions to validate
+  agent: account_insight_agent

@@ -78,6 +78,22 @@ class ResearchCrew:
             tools=[search_tool],
             verbose=True,
         )
+    
+    @agent
+    def account_insight_agent(self) -> Agent:
+        """
+        Create the account insight agent.
+
+        This agent analyzes the company research output to identify 
+        business insights, pain points, strategic opportunities, and 
+        concise talking points.
+        """
+        return Agent(
+            config=self.agents_config["account_insight_agent"],
+            llm=llm,
+            verbose=True,
+        )
+
 
     # ── Tasks ─────────────────────────────────────────────────────────────────
 
@@ -93,6 +109,21 @@ class ResearchCrew:
             config=self.tasks_config["company_research_task"],
             agent=self.company_research_agent(),
         ) # type: ignore
+        
+    @task
+    def account_insight_task(self) -> Task:
+        """
+        Define the account insight task that follows initial research.
+
+        This task takes the output of the research task as input and uses the
+        account insight agent to produce sales-ready insights and narrative.
+        """
+        return Task(
+            config=self.tasks_config["account_insight_task"],
+            agent=self.account_insight_agent(),
+            context=[self.company_research_task()],
+        )
+
 
     # ── Crew ──────────────────────────────────────────────────────────────────
 
