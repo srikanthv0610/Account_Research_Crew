@@ -1,13 +1,18 @@
 company_research_task:
   description: >
     Research the company: {company}.
+    Today's date is {today} and the current year is {current_year}.
     Gather the following:
     - Company overview (industry, size, headquarters, founding year)
-    - Recent news (last 3-6 months)
+    - Recent news from the last 3-6 months from today's date 
     - Key products and services
     - Financial health and recent performance
     - Key executives and decision makers
     - Known challenges or strategic initiatives
+
+    Important:
+    - Prioritize the newest publicly available information relative to today's date.
+
   expected_output: >
     A structured research report with clearly labeled sections
     covering all the above points for {company}.
@@ -34,3 +39,24 @@ account_insight_task:
     4. Opportunity signals
     5. Risks, gaps, or assumptions to validate
   agent: account_insight_agent
+
+executive_briefing_task:
+  description: >
+    Use the research findings and account insights for {company} to create a
+    concise pre-meeting executive briefing.
+
+    The briefing must be short, crisp, and highly scannable. Structure it with
+    the following sections:
+    - Company snapshot
+    - Recent developments
+    - Key priorities
+    - Suggested talking points
+    - Smart discovery questions
+
+    Keep the tone professional and practical for an account executive who needs
+    to prepare quickly before a customer meeting.
+  expected_output: >
+    A polished executive briefing for {company} in markdown format with the
+    sections: Company snapshot, Recent developments, Key priorities,
+    Suggested talking points, and Smart discovery questions.
+  agent: executive_briefing_agent 

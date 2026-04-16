@@ -1,10 +1,12 @@
 #!/usr/bin/env python
 import sys
 import warnings
+import re
+from pathlib import Path
 
 from datetime import datetime
 
-from src.account_research_crew.crew import ResearchCrew
+from account_research_crew.crew import ResearchCrew
 
 warnings.filterwarnings("ignore", category=SyntaxWarning, module="pysbd")
 
@@ -14,6 +16,8 @@ warnings.filterwarnings("ignore", category=SyntaxWarning, module="pysbd")
 # interpolate any tasks and agents information
 
 def run():
+    today = datetime.now().strftime("%B %d, %Y")
+    current_year = datetime.now().year
     # ── Get company name from CLI argument or interactive prompt ──────────────
     if len(sys.argv) > 1:
         # Usage: python main.py
@@ -30,13 +34,29 @@ def run():
     print("=" * 50)
 
     # ── Kick off the crew ─────────────────────────────────────────────────────
-    result = ResearchCrew().crew().kickoff(inputs={"company": company})
+    result = ResearchCrew().crew().kickoff(inputs={
+        "company": company, 
+        "today": today, 
+        "current_year": current_year})
 
     # ── Print final output ────────────────────────────────────────────────────
     print("\n" + "=" * 50)
     print(f"Briefing for {company} complete!")
     print(f"Full briefing saved to: briefing.md")
     print("\n" + str(result))
+    
+    output_dir = Path("output")
+    output_dir.mkdir(parents=True, exist_ok=True)
+    
+    safe_company = company.strip().replace(" ", "_")
+    output_file = output_dir / f"{safe_company}_executive_briefing.md"
+
+    final_text = getattr(result, "raw", str(result))
+
+    with open(output_file, "w", encoding="utf-8") as f:
+        f.write(final_text)
+
+    print(f"Saved final briefing to: {output_file}")
 
 
 def train():
