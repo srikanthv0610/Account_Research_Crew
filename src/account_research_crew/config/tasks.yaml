@@ -1,62 +1,47 @@
 company_research_task:
   description: >
-    Research the company: {company}.
-    Today's date is {today} and the current year is {current_year}.
-    Gather the following:
-    - Company overview (industry, size, headquarters, founding year)
-    - Recent news from the last 3-6 months from today's date 
+    Research {company} for a customer meeting.
+
+    Today's date is {today}. Prioritize the latest publicly available information.
+
+    Gather:
+    - Company snapshot
+    - Recent news and developments
     - Key products and services
-    - Financial health and recent performance
-    - Key executives and decision makers
-    - Known challenges or strategic initiatives
-
-    Important:
-    - Prioritize the newest publicly available information relative to today's date.
-
+    - Recent financial performance
+    - Key executives
+    - Strategic initiatives or challenges
   expected_output: >
-    A structured research report with clearly labeled sections
-    covering all the above points for {company}.
+    A structured research summary for {company} with clearly labeled sections
+    and dated recent findings.
   agent: company_research_agent
 
 account_insight_task:
   description: >
-    Review the research findings for {company} and transform them into business
-    insight for the upcoming meeting.
+    Review the research on {company} and convert it into meeting-relevant insight.
 
-    Do not just repeat the research. Instead, interpret it and explain:
-    - Which developments matter most for the meeting
-    - What business priorities may be emerging
-    - What likely pain points, risks, or opportunities can be inferred
-    - Which findings are most relevant for the account executive
-    - What should be validated or explored during the conversation
-
-    Focus on business relevance, interpretation, and account planning value.
+    Focus on:
+    - Key business themes
+    - Likely priorities or pain points
+    - Opportunity signals
+    - What matters most for the account executive
   expected_output: >
-    A structured account insight memo for {company} with:
-    1. Key business themes
-    2. Meeting relevance
-    3. Likely priorities and pain points
-    4. Opportunity signals
-    5. Risks, gaps, or assumptions to validate
+    A short account insight memo for {company} covering business themes,
+    priorities, risks, and opportunities.
   agent: account_insight_agent
 
 executive_briefing_task:
   description: >
-    Use the research findings and account insights for {company} to create a
-    concise pre-meeting executive briefing.
+    Use the research and account insight for {company} to create a concise
+    pre-meeting briefing.
 
-    The briefing must be short, crisp, and highly scannable. Structure it with
-    the following sections:
+    Structure the briefing into:
     - Company snapshot
     - Recent developments
     - Key priorities
     - Suggested talking points
     - Smart discovery questions
-
-    Keep the tone professional and practical for an account executive who needs
-    to prepare quickly before a customer meeting.
   expected_output: >
-    A polished executive briefing for {company} in markdown format with the
-    sections: Company snapshot, Recent developments, Key priorities,
-    Suggested talking points, and Smart discovery questions.
-  agent: executive_briefing_agent 
+    A polished executive briefing for {company} in markdown format, ready for
+    an account executive to review before the meeting.
+  agent: executive_briefing_agent

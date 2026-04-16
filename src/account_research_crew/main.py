@@ -1,7 +1,5 @@
 #!/usr/bin/env python
 import sys
-import json
-import warnings
 import re
 from pathlib import Path
 from datetime import datetime
@@ -55,7 +53,7 @@ def run():
     """
     Run the crew locally for a given company and save the final briefing.
 
-    This is the main entrypoint used in presentations to demonstrate how the
+    This is the main entrypoint used to demonstrate how the
     ResearchCrew is executed end-to-end from user input to output file.
     """
     company = get_company_from_args_or_prompt()
@@ -74,7 +72,6 @@ def run():
 
         print("\n" + "=" * 50)
         print(f"Briefing for {company} complete!\n")
-        print(str(result))
 
         # Persist the result as a Markdown executive briefing.
         output_file = save_result(company, result)
