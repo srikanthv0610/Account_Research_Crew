@@ -4,7 +4,7 @@ import warnings
 
 from datetime import datetime
 
-from account_research_crew.crew import AccountResearchCrew
+from account_research_crew.crew import ResearchCrew
 
 warnings.filterwarnings("ignore", category=SyntaxWarning, module="pysbd")
 
@@ -14,18 +14,29 @@ warnings.filterwarnings("ignore", category=SyntaxWarning, module="pysbd")
 # interpolate any tasks and agents information
 
 def run():
-    """
-    Run the crew.
-    """
-    inputs = {
-        'topic': 'AI LLMs',
-        'current_year': str(datetime.now().year)
-    }
+    # ── Get company name from CLI argument or interactive prompt ──────────────
+    if len(sys.argv) > 1:
+        # Usage: python main.py
+        company = " ".join(sys.argv[1:])
+    else:
+        # Interactive fallback
+        company = input("Query: Enter the company name for the briefing: ").strip()
 
-    try:
-        AccountResearchCrew().crew().kickoff(inputs=inputs)
-    except Exception as e:
-        raise Exception(f"An error occurred while running the crew: {e}")
+    if not company:
+        print("No company name provided. Exiting.")
+        sys.exit(1)
+
+    print(f"\nPreparing briefing for: {company}\n")
+    print("=" * 50)
+
+    # ── Kick off the crew ─────────────────────────────────────────────────────
+    result = ResearchCrew().crew().kickoff(inputs={"company": company})
+
+    # ── Print final output ────────────────────────────────────────────────────
+    print("\n" + "=" * 50)
+    print(f"Briefing for {company} complete!")
+    print(f"Full briefing saved to: briefing.md")
+    print("\n" + str(result))
 
 
 def train():
@@ -37,7 +48,7 @@ def train():
         'current_year': str(datetime.now().year)
     }
     try:
-        AccountResearchCrew().crew().train(n_iterations=int(sys.argv[1]), filename=sys.argv[2], inputs=inputs)
+        ResearchCrew().crew().train(n_iterations=int(sys.argv[1]), filename=sys.argv[2], inputs=inputs)
 
     except Exception as e:
         raise Exception(f"An error occurred while training the crew: {e}")
@@ -47,7 +58,7 @@ def replay():
     Replay the crew execution from a specific task.
     """
     try:
-        AccountResearchCrew().crew().replay(task_id=sys.argv[1])
+        ResearchCrew().crew().replay(task_id=sys.argv[1])
 
     except Exception as e:
         raise Exception(f"An error occurred while replaying the crew: {e}")
@@ -62,7 +73,7 @@ def test():
     }
 
     try:
-        AccountResearchCrew().crew().test(n_iterations=int(sys.argv[1]), eval_llm=sys.argv[2], inputs=inputs)
+       ResearchCrew().crew().test(n_iterations=int(sys.argv[1]), eval_llm=sys.argv[2], inputs=inputs)
 
     except Exception as e:
         raise Exception(f"An error occurred while testing the crew: {e}")
@@ -88,7 +99,8 @@ def run_with_trigger():
     }
 
     try:
-        result = AccountResearchCrew().crew().kickoff(inputs=inputs)
+        result = ResearchCrew().crew().kickoff(inputs=inputs)
         return result
     except Exception as e:
         raise Exception(f"An error occurred while running the crew with trigger: {e}")
+

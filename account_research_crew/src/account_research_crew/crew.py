@@ -1,64 +1,99 @@
-from crewai import Agent, Crew, Process, Task
+import os
+from dotenv import load_dotenv
+from crewai import Agent, Crew, Process, Task, LLM
 from crewai.project import CrewBase, agent, crew, task
-from crewai.agents.agent_builder.base_agent import BaseAgent
-from typing import List
-# If you want to run a snippet of code before or after the crew starts,
-# you can use the @before_kickoff and @after_kickoff decorators
-# https://docs.crewai.com/concepts/crews#example-crew-class-with-decorators
+from crewai_tools import SerperDevTool
+
+load_dotenv()
+
+# ── LLM pointed at your APIM endpoint ───────────────────────────────────────
+
+def build_llm() -> LLM:
+    azure_apim_key = os.getenv("AZURE_APIM_SUBSCRIPTION_KEY")
+    openai_key = os.getenv("OPENAI_API_KEY")
+
+    if azure_apim_key:
+        return LLM(
+            model="openai/gpt-4o",
+            base_url=(
+                "https://az-apim-svc-westeurope.azure-api.net/openai/deployments/gpt-4o"
+            ),
+            api_key=azure_apim_key,
+            extra_headers={
+                "Ocp-Apim-Subscription-Key": azure_apim_key
+            },
+            temperature=0.5,
+        )
+
+    if openai_key:
+        return LLM(
+            model="gpt-4o",
+            api_key=openai_key,
+            temperature=0.5,
+        )
+
+    raise ValueError(
+        "No LLM credentials found. Set either AZURE_APIM_SUBSCRIPTION_KEY or OPENAI_API_KEY in .env"
+    )
+
+llm = build_llm()
+
+
 
 @CrewBase
-class AccountResearchCrew():
-    """AccountResearchCrew crew"""
+class ResearchCrew:
+    """
+    Research Crew — prepares a pre-meeting briefing for an account executive.
+    Workflow (sequential):
+        1. Company Research Agent  → gathers raw company intelligence using web search.
+    """
 
-    agents: List[BaseAgent]
-    tasks: List[Task]
+    agents_config = "config/agents.yaml"
+    tasks_config  = "config/tasks.yaml"
 
-    # Learn more about YAML configuration files here:
-    # Agents: https://docs.crewai.com/concepts/agents#yaml-configuration-recommended
-    # Tasks: https://docs.crewai.com/concepts/tasks#yaml-configuration-recommended
-    
-    # If you would like to add tools to your agents, you can learn more about it here:
-    # https://docs.crewai.com/concepts/agents#agent-tools
-    @agent
-    def researcher(self) -> Agent:
-        return Agent(
-            config=self.agents_config['researcher'], # type: ignore[index]
-            verbose=True
-        )
+    # ── Agents ────────────────────────────────────────────────────────────────
 
     @agent
-    def reporting_analyst(self) -> Agent:
+    def company_research_agent(self) -> Agent:
+        """
+        Searches the web and compiles raw information about the target company.
+        Given access to SerperDevTool for live web search.
+        """
         return Agent(
-            config=self.agents_config['reporting_analyst'], # type: ignore[index]
-            verbose=True
+            config=self.agents_config["company_research_agent"],
+            llm=llm,
+            #tools=[search_tool],
+            verbose=True,
         )
 
-    # To learn more about structured task outputs,
-    # task dependencies, and task callbacks, check out the documentation:
-    # https://docs.crewai.com/concepts/tasks#overview-of-a-task
-    @task
-    def research_task(self) -> Task:
-        return Task(
-            config=self.tasks_config['research_task'], # type: ignore[index]
-        )
+    # ── Tasks ─────────────────────────────────────────────────────────────────
 
     @task
-    def reporting_task(self) -> Task:
+    def company_research_task(self) -> Task:
+        """
+        Task 1: Research the target company using web search.
+        Output feeds directly into the analysis task.
+        """
         return Task(
-            config=self.tasks_config['reporting_task'], # type: ignore[index]
-            output_file='report.md'
-        )
+            config=self.tasks_config["company_research_task"],
+            agent=self.company_research_agent(),
+        ) # type: ignore
+
+    # ── Crew ──────────────────────────────────────────────────────────────────
 
     @crew
     def crew(self) -> Crew:
-        """Creates the AccountResearchCrew crew"""
-        # To learn how to add knowledge sources to your crew, check out the documentation:
-        # https://docs.crewai.com/concepts/knowledge#what-is-knowledge
+        """
+        Assembles the crew with sequential processing:
+        ResearchAgent → AnalystAgent → SummaryAgent
 
+        Process.sequential ensures each agent waits for the previous
+        agent's output before starting — critical for context passing.
+        """
         return Crew(
-            agents=self.agents, # Automatically created by the @agent decorator
-            tasks=self.tasks, # Automatically created by the @task decorator
+            agents=self.agents,
+            tasks=self.tasks,
             process=Process.sequential,
             verbose=True,
-            # process=Process.hierarchical, # In case you wanna use that instead https://docs.crewai.com/how-to/Hierarchical/
+            tracing=True,
         )
