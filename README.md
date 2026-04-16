@@ -61,7 +61,7 @@ crewai install
 To kickstart your crew of AI agents and begin task execution, run this from the root folder of your project:
 
 ```bash
-$ crewai run
+crewai run
 ```
 
 This command initializes the account_research_crew Crew, assembling the agents and assigning them tasks as defined in the configuration. 
@@ -82,23 +82,12 @@ This starts the crew, runs the three agents sequentially, and saves the final br
 
 ## Example runs
 
-Run interactively and enter the company name when prompted:
-
-```bash
-crewai run
-```
-
-Run a different target company by typing it at the prompt:
-
-```text
-NVIDIA
-```
-
 Example:
 
 ```bash
 crewai run
-# Query: Enter the company name for the briefing: ROCHE
+
+Query: Enter the company name for the briefing: NVIDIA
 ```
 
 ## Output
