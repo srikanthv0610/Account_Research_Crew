@@ -1,8 +1,45 @@
-# AccountResearchCrew Crew
+# Account Research Crew
 
-Welcome to the AccountResearchCrew Crew project, powered by [crewAI](https://crewai.com). This template is designed to help you set up a multi-agent AI system with ease, leveraging the powerful and flexible framework provided by crewAI. Our goal is to enable your agents to collaborate effectively on complex tasks, maximizing their collective intelligence and capabilities.
+A CrewAI multi-agent system that prepares a short pre-meeting briefing for an account executive.  
+It researches a target company, turns the findings into business insight, and produces a concise executive briefing.
 
-## Installation
+## What it does
+
+This crew runs three agents in sequence:
+
+- **Company Research Agent** — gathers current company facts and recent developments.
+- **Account Insight Agent** — turns the research into business relevance and meeting insight.
+- **Executive Briefing Agent** — writes the final concise briefing for the account executive.
+
+The research agent uses `SerperDevTool` for live web search. The final output is saved as a Markdown file in the `output/` folder.
+
+
+## Clone the repository
+
+```bash
+git clone https://github.com/srikanthv0610/Account_Research_Crew.git
+cd Account_Research_Crew
+```
+
+## Customizing
+
+**Create a `.env` file in the project root and add your `OPENAI_API_KEY` and `SERPER_API_KEY`**
+
+
+### Option 1: Use OpenAI
+
+```env
+OPENAI_API_KEY=your_openai_api_key
+SERPER_API_KEY=your_serper_api_key
+```
+### Option 2: Use Azure APIM
+
+```env
+AZURE_APIM_SUBSCRIPTION_KEY=your_azure_apim_subscription_key
+SERPER_API_KEY=your_serper_api_key
+```
+
+## Install dependencies
 
 Ensure you have Python >=3.10 <3.14 installed on your system. This project uses [UV](https://docs.astral.sh/uv/) for dependency management and package handling, offering a seamless setup and execution experience.
 
@@ -12,22 +49,14 @@ First, if you haven't already, install uv:
 pip install uv
 ```
 
-Next, navigate to your project directory and install the dependencies:
+Next, install the project dependencies from `pyproject.toml`:
 
-(Optional) Lock the dependencies and install them by using the CLI command:
 ```bash
 crewai install
 ```
-### Customizing
 
-**Add your `OPENAI_API_KEY` into the `.env` file**
 
-- Modify `src/account_research_crew/config/agents.yaml` to define your agents
-- Modify `src/account_research_crew/config/tasks.yaml` to define your tasks
-- Modify `src/account_research_crew/crew.py` to add your own logic, tools and specific args
-- Modify `src/account_research_crew/main.py` to add custom inputs for your agents and tasks
-
-## Running the Project
+## Running the Application
 
 To kickstart your crew of AI agents and begin task execution, run this from the root folder of your project:
 
@@ -35,20 +64,50 @@ To kickstart your crew of AI agents and begin task execution, run this from the 
 $ crewai run
 ```
 
-This command initializes the account_research_crew Crew, assembling the agents and assigning them tasks as defined in your configuration.
+This command initializes the account_research_crew Crew, assembling the agents and assigning them tasks as defined in the configuration. 
 
-This example, unmodified, will run the create a `report.md` file with the output of a research on LLMs in the root folder.
+When the application starts, you will be prompted to enter the target company:
 
-## Understanding Your Crew
+```text
+Query: Enter the company name for the briefing:
+```
 
-The account_research_crew Crew is composed of multiple AI agents, each with unique roles, goals, and tools. These agents collaborate on a series of tasks, defined in `config/tasks.yaml`, leveraging their collective skills to achieve complex objectives. The `config/agents.yaml` file outlines the capabilities and configurations of each agent in your crew.
+Example:
 
-## Support
+```text
+Query: Enter the company name for the briefing: SAP
+```
 
-For support, questions, or feedback regarding the AccountResearchCrew Crew or crewAI.
-- Visit our [documentation](https://docs.crewai.com)
-- Reach out to us through our [GitHub repository](https://github.com/joaomdmoura/crewai)
-- [Join our Discord](https://discord.com/invite/X4JWnZnxPb)
-- [Chat with our docs](https://chatg.pt/DWjSBZn)
+This starts the crew, runs the three agents sequentially, and saves the final briefing in the `output/` folder.
 
-Let's create wonders together with the power and simplicity of crewAI.
+## Example runs
+
+Run interactively and enter the company name when prompted:
+
+```bash
+crewai run
+```
+
+Run a different target company by typing it at the prompt:
+
+```text
+NVIDIA
+```
+
+Example:
+
+```bash
+crewai run
+# Query: Enter the company name for the briefing: ROCHE
+```
+
+## Output
+
+The final executive briefing is saved as a Markdown file in the `output/` folder.
+
+Example:
+
+```text
+output/NVIDIA_executive_briefing.md
+```
+
