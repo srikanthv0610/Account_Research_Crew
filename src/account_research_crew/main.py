@@ -1,126 +1,88 @@
 #!/usr/bin/env python
 import sys
+import json
 import warnings
 import re
 from pathlib import Path
-
 from datetime import datetime
 
 from account_research_crew.crew import ResearchCrew
 
-warnings.filterwarnings("ignore", category=SyntaxWarning, module="pysbd")
+# Utility helpers for running the crew and saving output.
 
-# This main file is intended to be a way for you to run your
-# crew locally, so refrain from adding unnecessary logic into this file.
-# Replace with inputs you want to test with, it will automatically
-# interpolate any tasks and agents information
+def safe_filename(value: str) -> str:
+    """Normalize a string into a safe filename component."""
+    value = value.strip().replace(" ", "_")
+    return re.sub(r"[^A-Za-z0-9_-]", "", value)
+
+
+def build_inputs(company: str) -> dict:
+    """Create the input payload passed into the crew execution."""
+    return {
+        "company": company,
+        "today": datetime.now().strftime("%B %d, %Y"),
+        "current_year": str(datetime.now().year),
+    }
+
+
+def save_result(company: str, result) -> Path:
+    """Save the final briefing result to a markdown file."""
+    output_dir = Path("output")
+    output_dir.mkdir(parents=True, exist_ok=True)
+
+    safe_company = safe_filename(company)
+    output_file = output_dir / f"{safe_company}_executive_briefing.md"
+
+    # The crew result may expose a raw string payload or a custom wrapper object.
+    final_text = getattr(result, "raw", str(result))
+
+    with open(output_file, "w", encoding="utf-8") as f:
+        f.write(f"# Executive Briefing: {company}\n\n")
+        f.write(f"_Generated on {datetime.now().strftime('%B %d, %Y')}_\n\n")
+        f.write(final_text)
+
+    return output_file
+
+
+def get_company_from_args_or_prompt(arg_index: int = 1) -> str:
+    """Retrieve the target company from CLI arguments or prompt the user."""
+    if len(sys.argv) > arg_index:
+        return " ".join(sys.argv[arg_index:]).strip()
+    return input("Query: Enter the company name for the briefing: ").strip()
+
 
 def run():
-    today = datetime.now().strftime("%B %d, %Y")
-    current_year = datetime.now().year
-    # ── Get company name from CLI argument or interactive prompt ──────────────
-    if len(sys.argv) > 1:
-        # Usage: python main.py
-        company = " ".join(sys.argv[1:])
-    else:
-        # Interactive fallback
-        company = input("Query: Enter the company name for the briefing: ").strip()
+    """
+    Run the crew locally for a given company and save the final briefing.
+
+    This is the main entrypoint used in presentations to demonstrate how the
+    ResearchCrew is executed end-to-end from user input to output file.
+    """
+    company = get_company_from_args_or_prompt()
 
     if not company:
         print("No company name provided. Exiting.")
         sys.exit(1)
 
+    # Present the flow: user selects a company, crew runs, output is saved.
     print(f"\nPreparing briefing for: {company}\n")
     print("=" * 50)
 
-    # ── Kick off the crew ─────────────────────────────────────────────────────
-    result = ResearchCrew().crew().kickoff(inputs={
-        "company": company, 
-        "today": today, 
-        "current_year": current_year})
-
-    # ── Print final output ────────────────────────────────────────────────────
-    print("\n" + "=" * 50)
-    print(f"Briefing for {company} complete!")
-    print(f"Full briefing saved to: briefing.md")
-    print("\n" + str(result))
-    
-    output_dir = Path("output")
-    output_dir.mkdir(parents=True, exist_ok=True)
-    
-    safe_company = company.strip().replace(" ", "_")
-    output_file = output_dir / f"{safe_company}_executive_briefing.md"
-
-    final_text = getattr(result, "raw", str(result))
-
-    with open(output_file, "w", encoding="utf-8") as f:
-        f.write(final_text)
-
-    print(f"Saved final briefing to: {output_file}")
-
-
-def train():
-    """
-    Train the crew for a given number of iterations.
-    """
-    inputs = {
-        "topic": "AI LLMs",
-        'current_year': str(datetime.now().year)
-    }
     try:
-        ResearchCrew().crew().train(n_iterations=int(sys.argv[1]), filename=sys.argv[2], inputs=inputs)
+        # Build inputs and launch the crew pipeline.
+        result = ResearchCrew().crew().kickoff(inputs=build_inputs(company))
+
+        print("\n" + "=" * 50)
+        print(f"Briefing for {company} complete!\n")
+        print(str(result))
+
+        # Persist the result as a Markdown executive briefing.
+        output_file = save_result(company, result)
+        print(f"\nSaved final briefing to: {output_file}")
 
     except Exception as e:
-        raise Exception(f"An error occurred while training the crew: {e}")
+        raise Exception(f"An error occurred while running the crew: {e}")
 
-def replay():
-    """
-    Replay the crew execution from a specific task.
-    """
-    try:
-        ResearchCrew().crew().replay(task_id=sys.argv[1])
 
-    except Exception as e:
-        raise Exception(f"An error occurred while replaying the crew: {e}")
-
-def test():
-    """
-    Test the crew execution and returns the results.
-    """
-    inputs = {
-        "topic": "AI LLMs",
-        "current_year": str(datetime.now().year)
-    }
-
-    try:
-       ResearchCrew().crew().test(n_iterations=int(sys.argv[1]), eval_llm=sys.argv[2], inputs=inputs)
-
-    except Exception as e:
-        raise Exception(f"An error occurred while testing the crew: {e}")
-
-def run_with_trigger():
-    """
-    Run the crew with trigger payload.
-    """
-    import json
-
-    if len(sys.argv) < 2:
-        raise Exception("No trigger payload provided. Please provide JSON payload as argument.")
-
-    try:
-        trigger_payload = json.loads(sys.argv[1])
-    except json.JSONDecodeError:
-        raise Exception("Invalid JSON payload provided as argument")
-
-    inputs = {
-        "crewai_trigger_payload": trigger_payload,
-        "topic": "",
-        "current_year": ""
-    }
-
-    try:
-        result = ResearchCrew().crew().kickoff(inputs=inputs)
-        return result
-    except Exception as e:
-        raise Exception(f"An error occurred while running the crew with trigger: {e}")
-
+if __name__ == "__main__":
+    run()
