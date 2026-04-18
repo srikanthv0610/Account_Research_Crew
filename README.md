@@ -18,8 +18,8 @@ The research agent uses `SerperDevTool` for live web search. The final output is
 - Python 3.10 to 3.13
 - `uv`
 - `CrewAI`
-- A valid OpenAI credential for LLM calls
-- A valid 'SERPER_API_KEY' for web search - [Serper API](https://serper.dev/?utm_term=google%20search%20api&gad_source=1&gad_campaignid=18303173259&gbraid=0AAAAAo4ZGoFivm7unUvosOFcl7RI4rUd0&gclid=CjwKCAjw14zPBhAuEiwAP3-Eb_Tq1djTFTDleSaQmsShEzSJ1u_X_W4-NxLyD5egh99rak1WJjiFwRoCOykQAvD_BwE)
+- A valid `OPENAI_API_KEY` for LLM calls
+- A valid `SERPER_API_KEY` for web search - [Get one at serper.dev](https://serper.dev/?utm_term=google%20search%20api&gad_source=1&gad_campaignid=18303173259&gbraid=0AAAAAo4ZGoFivm7unUvosOFcl7RI4rUd0&gclid=CjwKCAjw14zPBhAuEiwAP3-Eb_Tq1djTFTDleSaQmsShEzSJ1u_X_W4-NxLyD5egh99rak1WJjiFwRoCOykQAvD_BwE)
 
 ## Clone the repository
 
@@ -30,7 +30,13 @@ cd Account_Research_Crew
 
 ## Customizing
 
-**Create a `.env` file in the project root and add your `OPENAI_API_KEY` and `SERPER_API_KEY`**
+**Create a `.env` file in the project root. You can use the provided `.env.example` as a starting point:
+
+```bash
+cp .env.example .env
+```
+
+Then fill in your credentials:
 
 ```env
 OPENAI_API_KEY=your_openai_api_key
@@ -39,21 +45,21 @@ SERPER_API_KEY=your_serper_api_key
 
 ## Install dependencies
 
-Ensure you have Python >=3.10 <3.14 installed on your system. This project uses [uv](https://docs.astral.sh/uv/) for dependency management and package handling, offering a seamless setup and execution experience.
+Ensure you have Python >=3.10 <3.14 installed on your system. This project uses [uv](https://docs.astral.sh/uv/) for dependency management and package handling.
 
-First, if you haven't already, install uv:
+**Step 1** First, if you haven't already, install uv:
 
 ```bash
 pip install uv
 ```
 
-Install crewai globally using uv
+**Step 2** Install crewai globally using uv
 
 ```bash
 uv tool install crewai
 ```
 
-Next, install the project dependencies from `pyproject.toml`:
+**Step 3** Next, install the project dependencies from `pyproject.toml`:
 
 ```bash
 crewai install
@@ -69,12 +75,12 @@ crewai run
 
 This command initializes the account research crew, assembling the agents and assigning them tasks as defined in the configuration. 
 
-When the application starts, you will be prompted to enter the target company:
+When the application starts, you will see:
 
 ```text
 Hello! Please enter the company name you would like a briefing for:
 ```
-You simply need to type the company name and press enter. See example below  
+Type the company name and press Enter:
 
 Example:
 
@@ -82,7 +88,7 @@ Example:
 Hello! Please enter the company name you would like a briefing for: Accenture
 ```
 
-This starts the crew, runs the three agents sequentially, and saves the final briefing in the `output/` folder.
+The crew will run the three agents sequentially and save the final briefing in the `output/` folder.
 
 
 ## Example run
@@ -97,11 +103,10 @@ Hello! Please enter the company name you would like a briefing for: NVIDIA
 
 ## Output
 
-The final executive briefing is saved as a Markdown file in the `output/` folder.
+The final executive briefing is saved as a Markdown file in the `output/` folder. 
 
-```text
-[output/NVIDIA_executive_briefing.md](https://github.com/srikanthv0610/Account_Research_Crew/blob/main/output/NVIDIA_executive_briefing.md)  
-```
+See a sample output here:
+[output/NVIDIA_executive_briefing.md](https://github.com/srikanthv0610/Account_Research_Crew/blob/main/output/NVIDIA_executive_briefing.md)
 
 ## Project structure
 
