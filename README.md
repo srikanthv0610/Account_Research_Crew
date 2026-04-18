@@ -47,19 +47,19 @@ SERPER_API_KEY=your_serper_api_key
 
 Ensure you have Python >=3.10 <3.14 installed on your system. This project uses [uv](https://docs.astral.sh/uv/) for dependency management and package handling.
 
-**Step 1** First, if you haven't already, install uv:
+**Step 1:** First, if you haven't already, install uv:
 
 ```bash
 pip install uv
 ```
 
-**Step 2** Install crewai globally using uv
+**Step 2:** Install crewai globally using uv
 
 ```bash
 uv tool install crewai
 ```
 
-**Step 3** Next, install the project dependencies from `pyproject.toml`:
+**Step 3:** Next, install the project dependencies from `pyproject.toml`:
 
 ```bash
 crewai install
@@ -116,6 +116,7 @@ Account_Research_Crew/
 ├── README.md
 ├── pyproject.toml
 ├── uv.lock
+├── LICENSE
 ├── knowledge/
 ├── output/
 └── src/
@@ -128,7 +129,3 @@ Account_Research_Crew/
         └── tools/
 ```
 
-## Support
-
-- CrewAI docs: https://docs.crewai.com
-- CrewAI GitHub: https://github.com/crewAIInc/crewai
