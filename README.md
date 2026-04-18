@@ -1,6 +1,6 @@
 # Account Research Crew
 
-A CrewAI multi-agent system that prepares a short pre-meeting briefing for an account executive.  
+A CrewAI based multi-agent system that prepares a short pre-meeting briefing for an account executive.  
 It researches a target company, turns the findings into business insight, and produces a concise executive briefing.
 
 ## What it does
@@ -17,9 +17,9 @@ The research agent uses `SerperDevTool` for live web search. The final output is
 
 - Python 3.10 to 3.13
 - `uv`
-- CrewAI
-- A valid 'OpenAI API KEY' for LLM calls - `OPENAI_API_KEY`
-- A valid ['SERPER API KEY'](https://serper.dev/?utm_term=google%20search%20api&gad_source=1&gad_campaignid=18303173259&gbraid=0AAAAAo4ZGoFivm7unUvosOFcl7RI4rUd0&gclid=CjwKCAjw14zPBhAuEiwAP3-Eb_Tq1djTFTDleSaQmsShEzSJ1u_X_W4-NxLyD5egh99rak1WJjiFwRoCOykQAvD_BwE) for web search 
+- `CrewAI`
+- A valid OpenAI credential for LLM calls
+- A valid 'SERPER_API_KEY' for web search - [Serper API](https://serper.dev/?utm_term=google%20search%20api&gad_source=1&gad_campaignid=18303173259&gbraid=0AAAAAo4ZGoFivm7unUvosOFcl7RI4rUd0&gclid=CjwKCAjw14zPBhAuEiwAP3-Eb_Tq1djTFTDleSaQmsShEzSJ1u_X_W4-NxLyD5egh99rak1WJjiFwRoCOykQAvD_BwE)
 
 ## Clone the repository
 
@@ -67,14 +67,14 @@ To kickstart your crew of AI agents and begin task execution, run this from the 
 crewai run
 ```
 
-This command initializes the account_research_crew Crew, assembling the agents and assigning them tasks as defined in the configuration. 
+This command initializes the account research crew, assembling the agents and assigning them tasks as defined in the configuration. 
 
 When the application starts, you will be prompted to enter the target company:
 
 ```text
 Hello! Please enter the company name you would like a briefing for:
 ```
-You simple need to type the company name as press ENTER as in the Example below. 
+You simply need to type the company name and press enter. See example below  
 
 Example:
 
@@ -99,10 +99,8 @@ Hello! Please enter the company name you would like a briefing for: NVIDIA
 
 The final executive briefing is saved as a Markdown file in the `output/` folder.
 
-Example:
-
 ```text
-output/NVIDIA_executive_briefing.md
+[output/NVIDIA_executive_briefing.md](https://github.com/srikanthv0610/Account_Research_Crew/blob/main/output/NVIDIA_executive_briefing.md)  
 ```
 
 ## Project structure
