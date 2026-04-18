@@ -30,7 +30,7 @@ cd Account_Research_Crew
 
 ## Customizing
 
-**Create a `.env` file in the project root. You can use the provided `.env.example` as a starting point:
+Create a `.env` file in the project root. You can use the provided `.env.example` as a starting point:
 
 ```bash
 cp .env.example .env
