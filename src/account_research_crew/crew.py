@@ -56,6 +56,8 @@ class ResearchCrew:
 
     Workflow (sequential):
         1. Company Research Agent  → gathers raw company intelligence using web search.
+        2. Account Insight Agent → analyzes research output to identify insights and talking points.
+        3. Executive Briefing Agent → compiles insights into a structured briefing document.
     """
 
     # YAML configuration files that define the agent and task behavior.

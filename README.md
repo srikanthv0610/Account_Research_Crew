@@ -13,6 +13,13 @@ This crew runs three agents in sequence:
 
 The research agent uses `SerperDevTool` for live web search. The final output is saved as a Markdown file in the `output/` folder.
 
+## Requirements
+
+- Python 3.10 to 3.13
+- `uv`
+- CrewAI
+- A valid 'OpenAI API KEY' for LLM calls - `OPENAI_API_KEY`
+- A valid ['SERPER API KEY'](https://serper.dev/?utm_term=google%20search%20api&gad_source=1&gad_campaignid=18303173259&gbraid=0AAAAAo4ZGoFivm7unUvosOFcl7RI4rUd0&gclid=CjwKCAjw14zPBhAuEiwAP3-Eb_Tq1djTFTDleSaQmsShEzSJ1u_X_W4-NxLyD5egh99rak1WJjiFwRoCOykQAvD_BwE) for web search 
 
 ## Clone the repository
 
@@ -25,23 +32,14 @@ cd Account_Research_Crew
 
 **Create a `.env` file in the project root and add your `OPENAI_API_KEY` and `SERPER_API_KEY`**
 
-
-### Option 1: Use OpenAI
-
 ```env
 OPENAI_API_KEY=your_openai_api_key
-SERPER_API_KEY=your_serper_api_key
-```
-### Option 2: Use Azure APIM
-
-```env
-AZURE_APIM_SUBSCRIPTION_KEY=your_azure_apim_subscription_key
 SERPER_API_KEY=your_serper_api_key
 ```
 
 ## Install dependencies
 
-Ensure you have Python >=3.10 <3.14 installed on your system. This project uses [UV](https://docs.astral.sh/uv/) for dependency management and package handling, offering a seamless setup and execution experience.
+Ensure you have Python >=3.10 <3.14 installed on your system. This project uses [uv](https://docs.astral.sh/uv/) for dependency management and package handling, offering a seamless setup and execution experience.
 
 First, if you haven't already, install uv:
 
@@ -49,12 +47,17 @@ First, if you haven't already, install uv:
 pip install uv
 ```
 
+Install crewai globally using uv
+
+```bash
+uv tool install crewai
+```
+
 Next, install the project dependencies from `pyproject.toml`:
 
 ```bash
 crewai install
 ```
-
 
 ## Running the Application
 
@@ -69,25 +72,27 @@ This command initializes the account_research_crew Crew, assembling the agents a
 When the application starts, you will be prompted to enter the target company:
 
 ```text
-Query: Enter the company name for the briefing:
+Hello! Please enter the company name you would like a briefing for:
 ```
+You simple need to type the company name as press ENTER as in the Example below. 
 
 Example:
 
 ```text
-Query: Enter the company name for the briefing: SAP
+Hello! Please enter the company name you would like a briefing for: Accenture
 ```
 
 This starts the crew, runs the three agents sequentially, and saves the final briefing in the `output/` folder.
 
-## Example runs
+
+## Example run
 
 Example:
 
 ```bash
 crewai run
 
-Query: Enter the company name for the briefing: NVIDIA
+Hello! Please enter the company name you would like a briefing for: NVIDIA
 ```
 
 ## Output
@@ -100,3 +105,27 @@ Example:
 output/NVIDIA_executive_briefing.md
 ```
 
+## Project structure
+
+```text
+Account_Research_Crew/
+├── .env
+├── README.md
+├── pyproject.toml
+├── uv.lock
+├── knowledge/
+├── output/
+└── src/
+    └── account_research_crew/
+        ├── crew.py
+        ├── main.py
+        ├── config/
+        │   ├── agents.yaml
+        │   └── tasks.yaml
+        └── tools/
+```
+
+## Support
+
+- CrewAI docs: https://docs.crewai.com
+- CrewAI GitHub: https://github.com/crewAIInc/crewai

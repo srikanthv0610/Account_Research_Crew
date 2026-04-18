@@ -46,7 +46,7 @@ def get_company_from_args_or_prompt(arg_index: int = 1) -> str:
     """Retrieve the target company from CLI arguments or prompt the user."""
     if len(sys.argv) > arg_index:
         return " ".join(sys.argv[arg_index:]).strip()
-    return input("Query: Enter the company name for the briefing: ").strip()
+    return input("Hello! Please enter the company name you would like a briefing for: ").strip()
 
 
 def run():
