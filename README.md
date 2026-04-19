@@ -28,7 +28,7 @@ git clone https://github.com/srikanthv0610/Account_Research_Crew.git
 cd Account_Research_Crew
 ```
 
-## Customizing
+## Adding environment variables
 
 Create a `.env` file in the project root. You can use the provided `.env.example` as a starting point:
 
@@ -45,7 +45,8 @@ SERPER_API_KEY=your_serper_api_key
 
 ## Install dependencies
 
-Ensure you have Python >=3.10 <3.14 installed on your system. This project uses [uv](https://docs.astral.sh/uv/) for dependency management and package handling.
+Ensure you have Python >=3.10 <3.14 installed on your system. This project uses [uv](https://docs.astral.sh/uv/) for dependency management and package handling. All dependencies are declared
+in `pyproject.toml` and pinned in `uv.lock` for reproducible installs.
 
 **Step 1:** First, if you haven't already, install uv:
 
@@ -53,17 +54,19 @@ Ensure you have Python >=3.10 <3.14 installed on your system. This project uses 
 pip install uv
 ```
 
-**Step 2:** Install crewai globally using uv
+**Step 2:** Next, install crewai globally using uv
 
 ```bash
 uv tool install crewai
 ```
 
-**Step 3:** Next, install the project dependencies from `pyproject.toml`:
+**Step 3:** Install all project dependencies from `pyproject.toml` using the pinned versions in `uv.lock`:
 
 ```bash
 crewai install
 ```
+This resolves and installs all dependencies exactly as declared in `pyproject.toml`, using `uv.lock`
+to guarantee consistent versions across all environments.
 
 ## Running the Application
 
@@ -82,28 +85,22 @@ Hello! Please enter the company name you would like a briefing for:
 ```
 Type the company name and press Enter:
 
-Example:
 
 ```text
-Hello! Please enter the company name you would like a briefing for: Accenture
+Hello! Please enter the company name you would like a briefing for: NVIDIA
 ```
 
 The crew will run the three agents sequentially and save the final briefing in the `output/` folder.
 
+## Output
 
-## Example run
+The final executive briefing is saved as a Markdown file in the `output/` folder.
 
 Example:
 
-```bash
-crewai run
-
-Hello! Please enter the company name you would like a briefing for: NVIDIA
+```text
+output/NVIDIA_executive_briefing.md
 ```
-
-## Output
-
-The final executive briefing is saved as a Markdown file in the `output/` folder. 
 
 See a sample output here:
 [output/NVIDIA_executive_briefing.md](https://github.com/srikanthv0610/Account_Research_Crew/blob/main/output/NVIDIA_executive_briefing.md)
@@ -129,3 +126,6 @@ Account_Research_Crew/
         └── tools/
 ```
 
+## License
+
+This project is licensed under the [MIT License](https://github.com/srikanthv0610/Account_Research_Crew/blob/main/LICENSE).
